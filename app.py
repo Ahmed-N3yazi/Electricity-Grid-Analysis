@@ -700,11 +700,53 @@ elif page == "Model Performance":
 
     if {"MAE", "RMSE", "R2"}.issubset(metrics.columns):
         st.markdown('<div class="section-title">Metric Relationship</div>', unsafe_allow_html=True)
-        fig = px.scatter(
-            metrics, x="RMSE", y="MAE", size="R2",
-            color="Model", text="Model",
-            title="MAE vs RMSE (bubble size represents R²)"
+
+
+        # Metric Relationship
+        st.subheader("Metric Relationship")
+        
+        plot_metrics = metrics.copy()
+        
+        # Ensure numeric values
+        for col in ["RMSE", "MAE", "R2"]:
+            plot_metrics[col] = pd.to_numeric(
+                plot_metrics[col], errors="coerce"
+            )
+        
+        # Remove invalid values
+        plot_metrics = plot_metrics.replace(
+            [np.inf, -np.inf], np.nan
+        ).dropna(subset=["RMSE", "MAE", "R2", "Model"])
+        
+        # Create a positive bubble size
+        plot_metrics["R2_Size"] = (
+            plot_metrics["R2"].clip(lower=0) + 0.05
         )
+        
+        fig = px.scatter(
+            plot_metrics,
+            x="RMSE",
+            y="MAE",
+            size="R2_Size",
+            color="Model",
+            text="Model",
+            title="MAE vs RMSE (Bubble Size Represents R²)",
+            size_max=45
+        )
+        
+        fig.update_traces(
+            textposition="top center"
+        )
+        
+        fig.update_layout(
+            template="plotly_dark",
+            xaxis_title="RMSE (Lower is Better)",
+            yaxis_title="MAE (Lower is Better)",
+            legend_title="Models"
+        )
+        
+        st.plotly_chart(fig, use_container_width=True)
+        
         fig.update_traces(textposition="top center")
         st.plotly_chart(polish(fig, 400), use_container_width=True, config=CHART_CONFIG)
 
