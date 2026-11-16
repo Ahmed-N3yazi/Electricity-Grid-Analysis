@@ -189,8 +189,32 @@ def polish(fig, height=390):
     return fig
 
 def page_header(title, subtitle):
-    st.markdown(f'<div class="main-title">{title}</div>', unsafe_allow_html=True)
-    st.markdown(f'<div class="sub-title">{subtitle}</div>', unsafe_allow_html=True)
+
+    st.markdown("""
+        <div style="
+            text-align: right;
+            margin-bottom: 15px;
+            color: #94a3b8;
+            font-size: 13px;
+            letter-spacing: 0.4px;
+        ">
+            Website Designed & Developed by
+            <span style="
+                color: #38bdf8;
+                font-weight: 700;
+            ">Ahmed Neyazi</span>
+        </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown(
+        f'<div class="main-title">{title}</div>',
+        unsafe_allow_html=True
+    )
+
+    st.markdown(
+        f'<div class="sub-title">{subtitle}</div>',
+        unsafe_allow_html=True
+    )
 
 def format_number(value):
     return f"{value:,.2f}" if pd.notna(value) else "N/A"
@@ -694,7 +718,6 @@ elif page == "Model Performance":
         "Metrics shown here are the saved test-set evaluation results from the training notebook."
     )
 
-
 # =========================================================
 # 9. FORECASTING WORKSPACE
 # =========================================================
@@ -823,10 +846,10 @@ elif page == "Forecasting":
     except Exception as error:
         st.error(f"Forecast generation failed: {error}")
 
-
 # =========================================================
 # 10. FOOTER
 # =========================================================
+
 st.sidebar.markdown("---")
 st.sidebar.caption("POWER GRID ANALYTICS")
 st.sidebar.caption("Machine Learning • Time Series • Energy Intelligence")
